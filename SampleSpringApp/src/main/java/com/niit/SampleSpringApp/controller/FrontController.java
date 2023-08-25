@@ -2,8 +2,11 @@ package com.niit.SampleSpringApp.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,8 +49,16 @@ public class FrontController
 	}
 	
 	@RequestMapping(value="/add" , method=RequestMethod.POST)
-	public ModelAndView addStudent(@ModelAttribute("student") Student s)
+	public ModelAndView addStudent(@Valid @ModelAttribute("student") Student s , BindingResult results)
 	{
+		if (results.hasErrors()) 
+		{
+			ModelAndView mv = new ModelAndView("add");
+			mv.addObject("student" , s);
+
+			return mv;
+		}
+		
 		ModelAndView mv = new ModelAndView("add");
 		
 		s.setTotal(s.getMaths()+s.getScience()+s.getEnglish()+s.getComputer()+s.getSst());
